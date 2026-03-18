@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Price Predictor - ML Model</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-laptop"></i>
+                    <h1>Laptop Price Predictor</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#single-predict" class="nav-link active">Single Prediction</a>
+                    <a href="#batch-predict" class="nav-link">Batch Prediction</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2>Predict Laptop Prices with Machine Learning</h2>
+                <p>Enter laptop specifications below to get an instant price prediction</p>
+            </section>
+
+            <!-- Single Prediction Section -->
+            <section id="single-predict" class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-laptop-code"></i> Single Laptop Prediction</h3>
+                    <p>Fill in the specifications to predict the price</p>
+                </div>
+
+                <form id="prediction-form" class="prediction-form">
+                    <div class="form-grid">
+                        {% if features %}
+                            <!-- Numeric Fields -->
+                            {% for feature in num_cols %}
+                            <div class="form-group">
+                                <label for="{{ feature }}">
+                                    <i class="fas fa-hashtag"></i> {{ feature }}
+                                </label>
+                                {% if numeric_defaults.get(feature) %}
+                                    {% if numeric_defaults[feature]['is_int'] %}
+                                    <input type="number" 
+                                           id="{{ feature }}" 
+                                           name="{{ feature }}" 
+                                           value="{{ numeric_defaults[feature]['median']|int }}"
+                                           step="1"
+                                           required>
+                                    {% else %}
+                                    <input type="number" 
+                                           id="{{ feature }}" 
+                                           name="{{ feature }}" 
+                                           value="{{ numeric_defaults[feature]['median'] }}"
+                                           step="0.01"
+                                           required>
+                                    {% endif %}
+                                {% else %}
+                                <input type="number" 
+                                       id="{{ feature }}" 
+                                       name="{{ feature }}" 
+                                       value="0"
+                                       step="any"
+                                       required>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+
+                            <!-- Categorical Fields -->
+                            {% for feature in cat_cols %}
+                            <div class="form-group">
+                                <label for="{{ feature }}">
+                                    <i class="fas fa-list"></i> {{ feature }}
+                                </label>
+                                <select id="{{ feature }}" name="{{ feature }}" required>
+                                    <option value="">-- Select {{ feature }} --</option>
+                                    {% if training_uniques.get(feature) %}
+                                        {% for value in training_uniques[feature] %}
+                                        <option value="{{ value }}">{{ value }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Feature list not available. Please ensure artifacts are properly loaded.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Predict Price
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Result Display -->
+                <div id="result-container" class="result-container hidden">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <i class="fas fa-check-circle"></i>
+                            <h4>Prediction Result</h4>
+                        </div>
+                        <div class="result-body">
+                            <div class="predicted-price">
+                                <span class="label">Predicted Price:</span>
+                                <span class="price">₹ <span id="predicted-price">0</span></span>
+                            </div>
+                            <div class="input-summary" id="input-summary">
+                                <!-- Input summary will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Display -->
+                <div id="error-container" class="error-container hidden">
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="error-message"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Batch Prediction Section -->
+            <section id="batch-predict" class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-file-csv"></i> Batch Prediction</h3>
+                    <p>Upload a CSV file to predict prices for multiple laptops</p>
+                </div>
+
+                <div class="upload-area">
+                    <form id="batch-form" enctype="multipart/form-data">
+                        <div class="file-upload">
+                            <input type="file" 
+                                   id="csv-file" 
+                                   name="file" 
+                                   accept=".csv"
+                                   required>
+                            <label for="csv-file" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Choose CSV file or drag here</span>
+                                <small>File should not contain 'Price_INR' column</small>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Run Batch Prediction
+                        </button>
+                    </form>
+
+                    <div id="batch-status" class="batch-status hidden">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Processing your file...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-brain"></i>
+                        <h4>ML Powered</h4>
+                        <p>Trained on thousands of laptop specifications</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-bolt"></i>
+                        <h4>Instant Results</h4>
+                        <p>Get predictions in milliseconds</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>High Accuracy</h4>
+                        <p>Reliable price predictions based on market data</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Laptop Price Predictor. Built with Flask & Machine Learning</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
