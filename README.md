@@ -77,6 +77,7 @@ Project Architecture
 
 The project follows a modular structure similar to production-level ML systems.
 
+```bash
 DS_PROJECT
 │
 ├── artifacts
@@ -119,6 +120,8 @@ DS_PROJECT
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
+
+```
 
 ----
 
