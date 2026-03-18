@@ -1,6 +1,8 @@
 Laptop Price Prediction Using Machine Learning
+----
 
 Live Link: https://laptop-price-prediction-using-machine-fue5.onrender.com/
+----
 
 Project Overview:
 
@@ -8,11 +10,15 @@ This project focuses on building a Machine Learning pipeline to predict laptop p
 
 The project is designed using a modular pipeline architecture to simulate an industry-level ML workflow, including data ingestion, preprocessing, model training, evaluation, and prediction.
 
+-----
+
 Problem Statement
 
 Laptop prices vary significantly depending on specifications such as processor type, RAM, storage, GPU, screen size, and brand. Manually estimating a fair laptop price based on specifications is difficult.
 
 This project aims to build a machine learning model that can predict the price of a laptop based on its features.
+
+----
 
 Key Features
 
@@ -34,8 +40,10 @@ Logging and exception handling
 
 Docker support for containerization
 
+----
+
 Technologies Used
-Programming Language
+Programming Language:
 
 Python
 
@@ -49,19 +57,21 @@ Scikit-learn
 
 Joblib
 
-Visualization & Analysis
+Visualization & Analysis:
 
 Matplotlib
 
 Seaborn
 
-Deployment & Tools
+Deployment & Tools:
 
 Docker
 
 GitHub
 
 Logging & custom exception handling
+
+----
 
 Project Architecture
 
@@ -109,6 +119,9 @@ DS_PROJECT
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
+
+----
+
 Machine Learning Workflow
 
 The project follows these steps:
@@ -143,20 +156,32 @@ Models are evaluated based on performance metrics, and the best model is selecte
 
 The best model is saved for future predictions.
 
+----
+
 Model Output
 
 The trained model and preprocessing pipeline are stored in the artifacts folder.
 
 artifacts/model/
+
     best_model.joblib
+    
     model_metrics.json
+    
 Running the Project
+
 1 Clone the Repository
+
 git clone https://github.com/Aniket-Gund/Laptop-Price-Prediction-Using-Machine-Learning.git
+
 2 Navigate to the Project Directory
+
 cd Laptop-Price-Prediction-Using-Machine-Learning
+
 3 Create Virtual Environment
+
 python -m venv venv
+
 4 Activate Environment
 
 Windows
@@ -166,15 +191,26 @@ venv\Scripts\activate
 Linux / Mac
 
 source venv/bin/activate
+
 5 Install Dependencies
+
 pip install -r requirements.txt
+
 6 Run Training Pipeline
+
 python main.py
+
 7 Run Application
+
 python app.py
+
+----
+
 Prediction
 
 Users can input laptop specifications through the interface, and the trained model predicts the estimated laptop price.
+
+----
 
 Dataset
 
@@ -206,9 +242,13 @@ Weight
 
 Price
 
+----
+
 Logging and Exception Handling
 
 The project includes a custom logging system to track pipeline execution and a centralized exception handling module for better debugging.
+
+----
 
 Docker Support
 
@@ -222,9 +262,10 @@ Run the container:
 
 docker run -p 5000:5000 laptop-price-prediction
 
+----
+
 
 Author
 
 Aniket Gund
-Electronics & Telecommunication Engineer
 Aspiring Data Scientist
