@@ -271,4 +271,3 @@ docker run -p 5000:5000 laptop-price-prediction
 Author
 
 Aniket Gund
-Aspiring Data Scientist
